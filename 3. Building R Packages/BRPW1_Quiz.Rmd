@@ -1,0 +1,103 @@
+---
+title: "Building R Packages Week 1 Quiz"
+author: "Jean-Philippe Maillard"
+date: "1/5/2020"
+output: html_document
+---
+
+# Question 1
+Which of the following are good reasons to build an R Package?
+
+1. R functions are only available for use in other programming languages (Python, C++) if they're included in a package
+2. Users need to understand how your R function work in order to use them and providing users with a package allows them to read your R code.
+3. An R package is a good method for distributing functions to users.
+4. R Packages require documentation and the package structure allows you to distribute functions and documentation together.
+
+##### Answer:
+
+
+
+# Question 2
+Which of the following files and folder are required in an R package?
+
+1. An inst/ directory
+2. A NAMESPACE file
+3. The man/ directory
+4. The R/ directory
+5. A README.md file
+6. A DESCRIPTION file
+
+##### Answer:
+2, 3, 4, 6
+
+
+# Question 3
+Which of the following files and subdirectories will be included in the initial package directory if you create a new package using the `create` function from `devtools`?
+
+1. DESCRIPTION
+2. 'R/' Subdirectory
+3. .Rbuildignore
+4. 'man/' subdirectory
+5. 'data/' subdirectory
+6. .gitignore
+7. R project file (package name plus '.Rproj' extension)
+8. 'vignettes/' subdirectory
+9. NAMESPACE
+10 README.md
+11. README.Rmd
+
+##### Answer:
+1, 2, 3, 6, 7, 9
+
+
+# Question 4
+Which of the following functions from the `devtools` package are you likely to use often, rather than just once per package, when building a package?
+
+1. 'create'
+2. 'document'
+3. 'use_readme_rmd'
+4. 'load_all'
+
+##### Answer:
+2, 4
+
+
+# Question 5
+What is the purpose of the DESCRIPTION file in a package?
+
+##### Answer:
+'It provides metadata on the package, including the package name, version number, authors, and dependencies.'
+
+
+# Question 6
+Which of the following statements correctly describes how R functions should be defined with the package directory?
+
+##### Answer:
+'They should all be defined in either a single or multiple R scripts in the 'R/' subdirectory'
+
+
+# Question 7
+What does the ::: operator do?
+
+##### Answer:
+'It allows access to unexported functions in a package'
+
+
+# Question 8
+How is attaching a package namespace different from loading a namespace?
+
+##### Answer:
+'Attaching a namespace places the namespace on the search list'
+
+
+# Question 9
+For packages that require C Code, what should be installed on your system?
+
+##### Answer:
+'A C compiler from XCOde, Rtools, or equivalent package'
+
+# Question 10
+What is the purpose of the Imports field in the DESCRIPTION file?
+
+##### Answer
+'To indicate the packages whose functions will be used in your package'

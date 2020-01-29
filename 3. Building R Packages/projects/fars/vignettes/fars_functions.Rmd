@@ -1,0 +1,49 @@
+---
+title: "fars Package Vignette"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{fars_functions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+This document will provide you with inforation on the basics functions available in the package fars that uses the FARS (Fatality Analysis Reporting System) and datasets.
+
+The functions provided for you in this package will be using data from the US National Highway Traffic Safety Administration's [Fatality Analysis Reporting System](http://www.nhtsa.gov/Data/Fatality-Analysis-Reporting-System-(FARS)), which is a nationwide census providing the American public yearly data regarding fatal injuries suffered in motor vehicle traffic crashes. You can download the example data [here](https://d18ky98rnyall9.cloudfront.net/_e1adac2a5f05192dc8780f3944feec13_fars_data.zip?Expires=1580256000&Signature=D1m3iINCEnby0dKBkpxXeq0MsEr7aFHK-5tHgiC1Tu9pYSvqpqj1sVL~7GV8ZpbL5BUUegAmAk1ohfh8LCHM1uo5tedVz9mEFN7QJvW4gZzE~qW5Gb37G8lV66U8uCUMLD8Bdq8REWryDvqXdo6Hs-uFdpu9h8HRTaSCA1jAPfo_&Key-Pair-Id=APKAJLTNE6QMUY6HBC5A) 
+
+
+# Loading the datasets
+Running the function "fars_read_years(year(s))" will return either a tibble or a list of tibbles containing  some 50 variables or more like the fatalities per state, the state Id, the longitude and latitude of the accident, the number of victims, the weather conditions, etc...
+
+```{r loading}
+library(fars)
+datas1 <- 2013
+datas2 <- c(2013, 2014, 2015)
+fars_read_years(datas1)
+fars_read_years(datas2)
+```
+
+# Summarizing fatalities
+The function "fars_summarize_years(year(s))" will return a summary per month of fatalities if you load only one year. When multiple years are loaded it will return a monthly summary per year.
+
+```{r summarizing}
+fars_summarize_years(2013)
+```
+
+
+# Mapping fatalities
+The function "fars_map_state(state, year)" will plot the fatalities per state per year on a US state map by using the geolocation of the accidents.
+
+A list of all the state codes can be found with the base "state.name"
+```{r}
+fars_map_state(13, 2013)
+```
+

@@ -1,0 +1,114 @@
+---
+title: "Building R Packages Quiz Week 3"
+author: "Jean-Philippe Maillard"
+date: "1/21/2020"
+output: html_document
+---
+
+
+# Question 1: Which of the following Software license reserve the fewest rights for the creator of the software
+
+1. GPL
+2. The Apple iTunes EULA
+3. Artistic-2.0
+4. CC0
+5. MIT
+6. The deal that Faust makes with Mephistopheles
+
+##### Answer(s):
+4
+
+
+# Question 2: Which of the following are good reasons for open sourcing your software?
+
+1. The chance that you'll make money from software you write is so small that you might as well just give it away for free.
+2. Open source licensing ensures that there are no limits to how others can use your software.
+3. The more people that are able to view and submit changes to the code, the more likely that the code will contain fewer bugs.
+4. Publishing open source software is a meaningful way to contribute to the community of any programming language.
+
+##### Answer(s):
+2, 3, 4
+
+
+# Question 3: How might incorporating testing into your R package have implications for code design?
+
+1. dividing your code into smaller functions allows you to test individual pieces more effectively.
+2. a few large functions makes testing run faster.
+3. giving your functions similar sounding names makes it easier to setup a testing framework.
+4. a testing framework may aggect the indenting of your code.
+
+##### Answer(s):
+1
+
+
+# Question 4: When a test fails in a call to expect_that(), what happens?
+
+1. The expect_that() fucntion returns NULL
+2. The expect_that() function returns FALSE
+3. An error is thrown
+4. A warning is given
+
+##### Answer(s):
+3
+
+
+# Question 5: What does the is_a() function do in the context of testthat?
+
+1. checks that a string matches a regular expression
+2. check for equality with numerical fuzz
+3. it is like equals() but ignores object attributes
+4. checks the class of an object
+
+##### Answer(s):
+4
+
+# Question 6: In which sub-directory of an R package should tests be placed?
+
+1. tests/
+2. R/
+3. src/
+4. man/
+
+##### Answer(s):
+1
+
+# Question 7: What is Git?
+
+1. an interactive development environment
+2. a website for hosting source code repositories
+3. a compiler for R code
+4. a version control system
+
+##### Answer(s):
+4
+
+
+# Question 8: What is a pull request on GitHub?
+
+1. a way to recreate a repository on your local machine
+2. a copy of an existing repository
+3. a way to suggest changes to a reporsitory that you do not own
+4. a thread in a discussion forum
+
+##### Answer(s):
+3
+
+# Question 9: How can a merge conflict be resolved?
+
+1. git can resolve all merge conflicts automatically
+2. send a pull request for one of your repositories
+3. choose the code you want to use and delete everything else
+4. clone the repository with the conflicted code
+
+##### Answer(s):
+3
+
+# Question 10: The GNU General Public License is called a copyleft license because
+
+1. the GPL prohibits any modification of the source code of software
+2. the GPL prohibits distribution of the software under any circumstances
+3. any software that is bundled with or originates from software licensed under GPL must also be released under the GPL
+4. the software can be modified and distributed without accompanying source code
+
+##### Answer(s):
+3

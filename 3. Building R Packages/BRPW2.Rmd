@@ -1,0 +1,519 @@
+---
+title: "Building R Packages Week 2"
+author: "Jean-Philippe Maillard"
+date: "1/6/2020"
+output: html_document
+---
+
+# Documentation
+
+## Documentation (Overview)
+There are two main types of documentation you may want to include with packages:
+
+- Longer documents that give tutorials or overviews for the whole package
+- Shorter, function specific help files for each function or group of related functions
+
+You can create the first type of document using package vignettes, README files, or both. For the function-specific help files, the easiest way to create these is with the roxygen2 package.
+
+In this section, we’ll cover why and how to create this documentation. In addition, vignette / README documentation can be done using knitr to create R Markdown documents that mix R code and text, so we’ll include more details on that process.
+
+
+## Vignette's and README files
+You will likely want to create a document that walks users through the basics of how to use your package. You can do this through two formats:
+
+- Vignette: This document is bundled with your R package, so it becomes locally available to a user once they install your package from CRAN. They will also have it available if they install the package from GitHub, as long as they use the build_vignettes = TRUE when running install_github.
+- README file: If you have your package on GitHub, this document will show up on the main page of the repository.
+
+A package likely only needs a README file if you are posting the package to GitHub. For any GitHub repository, if there is a README.md file in the top directory of the repository, it will be rendered on the main GitHub repository page below the listed repository content. For an example, visit https://github.com/leighseverson/countyweather and scroll down. You’ll see a list of all the files and subdirectories included in the package repository and below that is the content in the package’s README.md file, which gives a tutorial on using the package.
+
+If the README file does not need to include R code, you can write it directly as an .md file, using Markdown syntax, which is explained in more detail in the next section. If you want to include R code, you should start with a README.Rmd file, which you can then render to Markdown using knitr. You can use the devtools package to add either a README.md or README.Rmd file to a package directory, using use_readme_md or use_readme_rmd, respectively. These functions will add the appropriate file to the top level of the package directory and will also add the file name to “.Rbuildignore”, since having one of these files in the top level of the package directory could otherwise cause some problems when building the package.
+
+The README file is a useful way to give GitHub users information about your package, but it will not be included in builds of the package or be available through CRAN for packages that are posted there. Instead, if you want to create tutorials or overview documents that are included in a package build, you should do that by adding one or more package vignettes. Vignettes are stored in a vignettes subdirectory within the package directory.
+
+To add a vignette file, saved within this subdirectory (which will be created if you do not already have it), use the use_vignette function from devtools. This function takes as arguments the file name of the vignette you’d like to create and the package for which you’d like to create it (the default is the package in the current working directory). For example, if you are currently working in your package’s top-level directory and you would like to add a vignette called “model_details”, you can do that with the code:
+```{r eval=FALSE}
+use_vignette("model_details")
+```
+
+You can have more than one vignette per package, which can be useful if you want to include one vignette that gives a more general overview of the package as well as a few vignettes that go into greater detail about particular aspects or applications.
+
+Once you create a vignette with use_vignette, be sure to update the Vignette Index Entry in the vignette’s YAML (the code at the top of an R Markdown document). Replace “Vignette Title” there with the actual title you use for the vignette.
+
+
+## Knitr / Markdown
+Both vignette and README files can be written as R Markdown files, which will allow you to include R code examples and results from your package. One of the most exciting tools in R is the knitr system for combining code and text to create a reproducible document. In terms of the power you get for time invested in learning a tool, knitr probably can’t be beat. Everything you need to know to create and “knit” a reproducible document can be learned in about 20 minutes, and while there is a lot more you can do to customize this process if you want to, probably 80% of what you’ll ever want to do with knitr you’ll learn in those first 20 minutes.
+
+R Markdown files are mostly written using Markdown. To write R Markdown files, you need to understand what markup languages like Markdown are and how they work. In Word and other word processing programs you have used, you can add formatting using buttons and keyboard shortcuts (e.g., “Ctrl-B” for bold). The file saves the words you type. It also saves the formatting, but you see the final output, rather than the formatting markup, when you edit the file (WYSIWYG – what you see is what you get). In markup languages, on the other hand, you markup the document directly to show what formatting the final version should have (e.g., you type **bold** in the file to end up with a document with bold). Examples of markup languages include:
+
+- HTML (HyperText Markup Language)
+- LaTex
+- Markdown (a “lightweight” markup language)
+
+To write a file in Markdown, you’ll need to learn the conventions for creating formatting. See this table for some common formatting choices: [Table of Markdown Formatting Specifiers](https://bookdown.org/rdpeng/RProgDA/documentation.html#common-markdown-formatting-elements).
+
+Some other simple things you can do in Markdown include:
+
+- Lists (ordered or bulleted)
+- Equations
+- Tables
+- Figures from file
+- Block quotes
+- Superscripts
+
+he start of a Markdown file gives some metadata for the file (authors, title, format) in a language called YAML. For example, the YAML section of a package vignette might look like this:
+
+
+title: "Model Details for example_package"
+
+author: "Jane Doe"
+
+date: "2016-11-08"
+
+output: rmarkdown::html_vignette
+
+vignette: >
+
+  %\VignetteIndexEntry{Model Details for example_package}
+  
+  %\VignetteEngine{knitr::rmarkdown}
+  
+  %\VignetteEncoding{UTF-8}
+  
+
+When creating R Markdown documents using the RStudio toolbar, much of this YAML will be automatically generated based on your specifications when opening the initial file. However, this is not the case with package vignettes, for which you’ll need to go into the YAML and add the authors and title yourself. Leave the vignette engine, vignette encoding, output, and date as their default values.
+
+For more Markdown conventions, see RStudio’s R Markdown Reference Guide (link also available through “Help” in RStudio).
+
+R Markdown files work a lot like Markdown files, but add the ability to include R code that will be run before rendering the final document. This functionality is based on literate programming, an idea developed by Donald Knuth, to mix executable code with regular text. The files you create can then be rendered, to run any embedded code. The final output will have results from your code and the regular text.
+
+1. The basic steps of opening and rendering an R Markdown file in RStudio are:
+2. To open a new R Markdown file, go to “File” -> “New File” -> “RMarkdown…” -> for now, chose a “Document” in “HTML” format.
+3. This will open a new R Markdown file in RStudio. The file extension for R Markdown files is “.Rmd”.
+4. The new file comes with some example code and text. You can run the file as-is to try out the example. You will ultimately delete this example code and text and replace it with your own.
+5. Once you “knit” the R Markdown file, R will render an HTML file with the output. This is automatically saved in the same directory where you saved your .Rmd file.
+6. Write everything besides R code using Markdown syntax.
+
+The knit function from the knitr package works by taking a document in R Markdown format (among a few possible formats), reading through it for any markers of the start of R code, running any of the code between that “start” marker and a marker showing a return to regular Markdown, writing any of the relevant results from R code into the Markdown file in Markdown format, and then passing the entire document, now in Markdown rather than R Markdown format, to software that can render from Markdown to the desired output format (for example, compile a pdf, Word, or HTML document).
+
+This means that all a user needs to do to include R code, that will be run if desired, within a document is to properly separate it from other parts of the document through the appropriate markers. To indicate R code in an RMarkdown document, you need to separate off the code chunk using the following syntax:
+```{r}
+my_vec <- 1:10
+```
+
+This syntax tells R how to find the start and end of pieces of R code when the file is rendered. R will walk through, find each piece of R code, run it and create output (printed output or figures, for example), and then pass the file along to another program to complete rendering (e.g., Tex for pdf files).
+
+You can specify a name for each chunk, if you’d like, by including it after “r” when you begin your chunk. For example, to give the name load_mtcars to a code chunk that loads the mtcars dataset, specify that name in the start of the code chunk:
+```{r load_mtcars}
+data(mtcars)
+```
+
+Here are a couple of tips for naming code chunks:
+
+- Chunk names must be unique across a document.
+- Any chunks you don’t name are given ordered numbers by knitr.
+
+You do not have to name each chunk. However, there are some advantages:
+
+- It will be easier to find any errors.
+- You can use the chunk labels in referencing for figure labels.
+- You can reference chunks later by name.
+
+
+## Common Knitr options
+You can also add options when you start a chunk. Many of these options can be set as TRUE / FALSE and include: [Table of Common knitr Options](https://bookdown.org/rdpeng/RProgDA/documentation.html#common-knitr-chunk-options).
+
+To include any of these options, add the option and value in the opening brackets and separate multiple options with commas:
+```{r messages = FALSE, echo = FALSE}
+mtcars[1, 1:3]
+```
+
+You can set “global” options at the beginning of the document. This will create new defaults for all of the chunks in the document. For example, if you want echo, warning, and message to be FALSE by default in all code chunks, you can run:
+```{r global_options2}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE,
+  warning = FALSE)
+```
+
+If you set both global and local chunk options that you set specifically for a chunk will take precedence over global options. For example, running a document with:
+```{r global_options}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE,
+  warning = FALSE)
+```
+
+```{r check_mtcars, echo = TRUE}
+head(mtcars, 1)
+```
+would print the code for the check_mtcars chunk, because the option specified for that specific chunk (echo = TRUE) would override the global option (echo = FALSE).
+
+You can also include R output directly in your text (“inline”) using backticks:
+
+“There are `r nrow(mtcars)` observations in the mtcars data set. The average miles per gallon is `r mean(mtcars$mpg, na.rm = TRUE)`.”
+
+Once the file is rendered, this gives:
+
+“There are 32 observations in the mtcars data set. The average miles per gallon is 20.090625.”
+
+Here are some tips that will help you diagnose some problems rendering R Markdown files:
+
+- Be sure to save your R Markdown file before you run it.
+- All the code in the file will run “from scratch”— as if you just opened a new R session.
+- The code will run using, as a working directory, the directory where you saved the R Markdown file.
+
+You’ll want to try out pieces of your code as you write an R Markdown document. There are a few ways you can do that:
+
+- You can run code in chunks just like you can run code from a script (Ctrl-Return or the “Run” button).
+- You can run all the code in a chunk (or all the code in all chunks) using the different options under the “Run” button in RStudio.
+- All the “Run” options have keyboard shortcuts, so you can use those.
+
+You can use this format to create documentation, including vignettes, to give users advice and examples for using your package.
+
+Two excellent books for learning more about creating reproducible documents with R are Dynamic Documents with R and knitr by Yihui Xie (the creator of knitr) and Reproducible Research with R and RStudio by Christopher Gandrud. The first goes into the technical details of how knitr and related code works, which gives you the tools to extensively customize a document. The second provides an extensive view of how to use tools from R and other open source software to conduct, write up, and present research in a reproducible and efficient way. RStudio’s [R Markdown Cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf) is another very useful reference.
+
+
+## Help files and roxygen2
+In addition to writing tutorials that give an overview of your whole package, you should also write specific documentation showing users how to use and interpret any functions you expect users to directly call.
+
+These help files will ultimately go in a folder called /man of your package, in an R documentation format (.Rd file extensions) that is fairly similar to LaTex. You used to have to write all of these files as separate files. However, the roxygen2 package lets you put all of the help information directly in the code where you define each function.
+
+With roxygen2, you add the help file information directly above the code where you define each functions, in the R scripts saved in the R subdirectory of the package directory. You start each line of the roxygen2 documentation with #' (the second character is an apostrophe, not a backtick). The first line of the documentation should give a short title for the function, and the next block of documentation should be a longer description. After that, you will use tags that start with @ to define each element you’re including. You should leave an empty line between each section of documentation, and you can use indentation for second and later lines of elements to make the code easier to read.
+
+Here is a basic example of how this roxygen2 documentation would look for a simple “Hello world” function:
+
+#' Print "Hello world" 
+
+#'
+
+#' This is a simple function that, by default, prints "Hello world". You can 
+
+#' customize the text to print (using the \code{to_print} argument) and add
+
+#' an exclamation point (\code{excited = TRUE}).
+
+#'
+
+#' @param to_print A character string giving the text the function will print
+
+#' @param excited Logical value specifying whether to include an exclamation
+
+#'    point after the text
+
+#' 
+
+#' @return This function returns a phrase to print, with or without an 
+
+#'    exclamation point added. As a side effect, this function also prints out
+
+#'    the phrase. 
+
+#'
+
+#' @examples
+
+#' hello_world()
+
+#' hello_world(excited = TRUE)
+
+#' hello_world(to_print = "Hi world")
+
+#'
+
+#' @export
+
+hello_world <- function(to_print = "Hello world", excited = FALSE){
+
+    if(excited) to_print <- paste0(to_print, "!")
+
+    print(to_print)
+
+}
+
+
+## Common rowygen2 tags
+Here are some of the common roxygen2 tags to use in creating this documentation: [Table of common roxygen2 tags](https://bookdown.org/rdpeng/RProgDA/documentation.html#common-roxygen2-tags).
+
+Here are a few things to keep in mind when writing help files using roxygen2:
+
+The tags @example and @examples do different things. You should always use the @examples (plural) tag for example code, or you will get errors when you build the documentation.
+
+The @inheritParams function can save you a lot of time, because if you are using the same parameters in multiple functions in your package, you can write and edit those parameter descriptions just in one place. However, keep in mind that you must point @inheritParams to the function where you originally define the parameters using @param, not another function where you use the parameters but define them using an @inheritParams pointer.
+
+If you want users to be able to directly use the function, you must include @export in your roxygen2 documentation. If you have written a function but then find it isn’t being found when you try to compile a README file or vignette, a common culprit is that you have forgotten to export the function.
+
+You can include formatting (lists, etc.) and equations in the roxygen2 documentation. Here are some of the common formatting tags you might want to use: [Table of common roxygen2 formatting tags](https://bookdown.org/rdpeng/RProgDA/documentation.html#common-roxygen2-formatting-tags).
+
+Some tips on using the R documentation format:
+
+- Usually, you’ll want you use the \link tag only in combination with the \code tag, since you’re linking to another R function. Make sure you use these with \code wrapping \link, not the other way around (\code{\link{other_function}}), or you’ll get an error.
+- Some of the equation formatting, including superscripts and subscripts, won’t parse in Markdown-based documentation (but will for pdf-based documentation). With the \eqn and deqn tags, you can include two versions of an equation, one with full formatting, which will be fully compiled by pdf-based documentation, and one with a reduced form that looks better in Markdown-based documentation (for example, \deqn{ \frac{X^2}{Y} }{ X2 / Y }).
+- For any examples in help files that take a while to run, you’ll want to wrap the example code in the \dontrun tag.
+- The tags \url and \href both include a web link. The difference between the two is that \url will print out the web address in the help documentation, href allows you to use text other than the web address for the anchor text of the link. For example: "For more information, see \url{www.google.com}."; "For more information, \href{www.google.com}{Google it}.".
+
+In addition to document functions, you should also document any data that comes with your package. To do that, create a file in the /R folder of the package called “data.R” to use to documentation all of the package’s datasets. You can use roxygen2 to document each dataset, and end each with the name of the dataset in quotation marks. There are more details on documenting package data using roxygen2 in the next section.
+Mark as completed
+
+
+# Data Within a Package
+
+## Overview
+Many R packages are designed to manipulate, visualize, and model data so it may be a good idea for you to include some data in your package. The primary reason most developers include data in their package is to demonstrate how to use the functions included in the package with the included data. Creating a package as a means to distribute data is also a method that is gaining popularity. Additionally you may want to include data that your package uses internally, but is not available to somebody who is using your package. When including data in your package consider the fact that your compressed package file should be smaller than 5MB, which is the largest package size that CRAN allows. If your package is larger than 5MB make sure to inform users in the instructions for downloading and installing your package.
+
+
+## Data for demos
+
+#### Data Objects
+Including data in your package is easy thanks to the devtools package. To include datasets in a package, first create the objects that you would like to include in your package inside of the global environment. You can include any R object in a package, not just data frames. Then make sure you’re in your package directory and use the use_data() function, listing each object that you want to include in your package. The names of the objects that you pass as arguments to use_data() will be the names of the objects when a user loads the package, so make sure you like the variable names that you’re using.
+
+You should then document each data object that you’re including in the package. This way package users can use common R help syntax like ?dataset to find out more information about the included data set. You should create one R file called data.R in the R/ directory of your package. You can write the data documentation in the data.R file. Let’s take a look at some documentation examples from the minimap package. First we’ll look at the documentation for a data frame called maple:
+```{r eval=FALSE}
+#' Production and farm value of maple products in Canada
+#'
+#' @source Statistics Canada. Table 001-0008 - Production and farm value of
+#'  maple products, annual. \url{http://www5.statcan.gc.ca/cansim/}
+#' @format A data frame with columns:
+#' \describe{
+#'  \item{Year}{A value between 1924 and 2015.}
+#'  \item{Syrup}{Maple products expressed as syrup, total in thousands of gallons.}
+#'  \item{CAD}{Gross value of maple products in thousands of Canadian dollars.}
+#'  \item{Region}{Postal code abbreviation for territory or province.}
+#' }
+#' @examples
+#' \dontrun{
+#'  maple
+#' }
+"maple"
+```
+
+Data frames that you include in your package should follow the general schema above where the documentation page has the following attributes:
+
+An informative title describing the object.
+
+A @source tag describing where the data was found.
+
+A @format tag which describes the data in each column of the data frame.
+
+And then finally a string with the name of the object.
+
+The minimap package also includes a few vectors. Let’s look at the documentation for mexico_abb:
+```{r eval=FALSE}
+#' Postal Abbreviations for Mexico
+#'
+#' @examples
+#' \dontrun{
+#'  mexico_abb
+#' }
+"mexico_abb"
+```
+
+You should always include a title for a description of a vector or any other object. If you need to elaborate on the details of a vector you can include a description in the documentation or a @source tag. Just like with data frames the documentation for a vector should end with a string containing the name of the object.
+
+##### Raw Data
+A common task for R packages is to take raw data from files and to import them into R objects so that they can be analyzed. You might want to include some sample raw data files so you can show different methods and options for importing the data. To include raw data files in your package you should create a directory under inst/extdata in your R package. If you stored a data file in this directory called response.json in inst/extdata and your package is named mypackage then a user could access the path to this file with system.file("extdata", "response.json", package = "mypackage"). Include that line of code in the documentation to your package so that your users know how to access the raw data file.
+
+
+## Internal data
+Functions in your package may need to have access to data that you don’t want your users to be able to access. For example the swirl package contains translations for menu items into languages other than English, however that data has nothing to do with the purpose of the swirl package and so it’s hidden from the user. To add internal data to your package you can use the use_data() function from devtools, however you must specify the internal = TRUE argument. All of the objects you pass to use_data(..., internal = TRUE) can be referenced by the same name within your R package. All of these objects will be saved to one file called R/sysdata.rda.
+
+
+## Data packages
+There are several packages which were created for the sole purpose of distributing data including [janeaustenr](https://github.com/juliasilge/janeaustenr), [gapminder](https://github.com/jennybc/gapminder), [babynames](https://github.com/hadley/babynames), and [lego](https://github.com/seankross/lego). Using an R package as a means of distributing data has advantages and disadvantages. On one hand the data is extremely easy to load into R, a user only needs to install and load the package. This can be useful for teaching folks who are new to R and may not be familiar with importing and cleaning data. Data packages also allow you document datasets using roxygen2, which provides a much cleaner and more programmer-friendly kind of code book compared to including a file that describes the data. On the other hand data in a data package is not accessible to people who are not using R, though there’s nothing stopping you from distributing the data in multiple ways.
+
+If you decide to create a data package you should document the process that you used to obtain, clean, and save the data. One approach to doing this is to use the use_data_raw() function from devtools. This will create a directory inside of your package called data_raw. Inside of this directory you should include any raw files that the data objects in you package are derived from. You should also include one or more R scripts which import, clean, and save those data objects in your R package. Theoretically if you needed to update the data package with new data files you should be able to just run these scripts again in order to rebuild your package.
+
+
+## Summary
+Including data in a package is useful for showing new users how to use your package, using data internally, and sharing and documenting datasets. The devtools package includes several useful functions to help you add data to your package including use_data() and use_data_raw(). You can document data within your package just like you would document a function.
+
+
+# Software Testing Framework For R Packages
+
+## Introduction
+Once you’ve written code for an R package and have gotten that code to a point where you believe it’s working, it may be a good time to step back and consider a few things about your code.
+
+- How do you know it’s working? Given that you wrote the functions, you have a certain set of expectations about how the functions should behave. Specifically, for a given set of inputs you expect a certain output. Having these expectations clearly in mind is an important aspect of knowing whether code is “working”.
+- Have you already tested your code? Chances are, throughout the development of your code, you ran little tests to see if your functions were working. Assuming these tests were valid for the code you were testing, it’s worth keeping these tests on hand and making them part of your package.
+
+Setting up a battery of tests for the code in your package can play a big role in maintaining the ongoing smooth operation of the package in hunting down bugs in the code, should they arise. Over time, many aspects of a package can change. Specifically:
+
+- As you actively develop your code, you may change/break older code without knowing it. For example, modifying a helper function that lots of other functions rely may be better for some functions but may break behavior for other functions. Without a comprehensive testing framework, you might not know that some behavior is broken until a user reports it to you.
+- The environment in which your package runs can change. The version of R can change, libraries, web sites and any other external resources, and packages can all change without warning. In such cases, your code may be unchanged, but because of an external change, your code may not produce the expected output given a set of inputs. Having tests in place that are run regularly can help to catch these changes even if your package isn’t under active development.
+- As you fix bugs in your code, it’s often a good idea to include a specific test that addresses each bug so that you can be sure that the bug does not “return” in a future version of the package (this is also known as a regression).
+
+Testing your code effectively has some implications for code design. In particular, it may be more useful to divide your code into smaller functions that you can test individual pieces more effectively. For example, if you have one large function that returns TRUE or FALSE, it is easy to test this function, but ultimately it may not be possible to identify problems deep in the code by simply checking if the function returns the correct logical value. It may be better to divide up large function into smaller functions so that core elements of the function can be tested separately to ensure that they are behaving appropriately.
+
+
+## The testthat package
+
+The testthat package is designed to make it easy to setup a battery of tests for your R package. A nice introduction to the package can be found in Hadley Wickham’s article in the R Journal. Essentially, the package contains a suite of functions for testing function/expression output with the expected output. The simplest use of the package is for testing a simple expression:
+
+```{r}
+library(testthat)
+expect_that(sqrt(3) * sqrt(3), equals(3))
+```
+
+Note that the equals() function allows for some numerical fuzz, which is why this expression actually passes the test. When a test fails, expect_that() throws an error and does not return something.
+
+```{r eval=FALSE}
+## Use a strict test of equality (this test fails)
+expect_that(sqrt(3) * sqrt(3), is_identical_to(3))
+```
+
+The expect_that() function can be used to wrap many different kinds of test, beyond just numerical output. The table below provides a brief summary of the types of comparisons that can be made.
+
+E**xpectation** | **Description**
+--- | ---
+equals() | check for equality with numerical fuzz
+is_identical_to() | strict equality via identical()
+is_equivalent_to() | like equals() but ignores object attributes
+is_a() | checks the class of an object (using inherits())
+matches() | checks that a string matches a regular expression
+prints_text() | checks that an expression prints to the console
+shows_message() | checks for a message being generated
+gives_warning() | checks that an expression gives a warning
+throws_error() | checks that an expression (properly) throws an error
+is_true() | checks that an expression is TRUE
+
+A collection of calls to expect_that() can be put together with the test_that() function, as in
+```{r}
+test_that("model fitting", {
+        data(airquality)
+        fit <- lm(Ozone ~ Wind, data = airquality)
+        expect_that(fit, is_a("lm"))
+        expect_that(1 + 1, equals(2))
+})
+```
+
+Typically, you would put your tests in an R file. If you have multiple sets of tests that test different domains of a package, you might put those tests in different files. Individual files can have their tests run with the test_file() function. A collection of tests files can be placed in a directory and tested all together with the test_dir() function.
+
+In the context of an R package, it makes sense to put the test files in the tests directory. This way, when running R CMD check (see the next section) all of the tests will be run as part of process of checking the entire package. If any of your tests fail, then the entire package checking process will fail and will prevent you from distributing buggy code. If you want users to be able to easily see the tests from an installed package, you can place the tests in the inst/tests directory and have a separate file in the tests directory run all of the tests.
+
+
+# Passing CRAN checks
+
+## Passing CRAN checks
+Before submitting a package to CRAN, you must pass a battery of tests that are run by the R itself via the R CMD check program. In RStudio, if you are in an R Package “Project” you can run R CMD check by clicking the Check button in the build tab. This will run a series of tests that check the metadata in your package, the NAMESPACE file, the code, the documentation, run any tests, build any vignettes, and many others.
+
+Here is an example of the output form R CMD check for the filehash package which currently passes all tests.
+
+* using R version 3.3.2 (2016-10-31)
+* using platform: x86_64-apple-darwin13.4.0 (64-bit)
+* using session charset: UTF-8
+* checking for file 'filehash/DESCRIPTION' ... OK
+* this is package 'filehash' version '2.3'
+* checking package namespace information ... OK
+* checking package dependencies ... OK
+* checking if this is a source package ... OK
+* checking if there is a namespace ... OK
+* checking for executable files ... OK
+* checking for hidden files and directories ... OK
+* checking for portable file names ... OK
+* checking for sufficient/correct file permissions ... OK
+* checking whether package 'filehash' can be installed ... OK
+* checking installed package size ... OK
+* checking package directory ... OK
+* checking 'build' directory ... OK
+* checking DESCRIPTION meta-information ... OK
+* checking top-level files ... OK
+* checking for left-over files ... OK
+* checking index information ... OK
+* checking package subdirectories ... OK
+* checking R files for non-ASCII characters ... OK
+* checking R files for syntax errors ... OK
+* checking whether the package can be loaded ... OK
+* checking whether the package can be loaded with stated dependencies ... OK
+* checking whether the package can be unloaded cleanly ... OK
+* checking whether the namespace can be loaded with stated dependencies ... OK
+* checking whether the namespace can be unloaded cleanly ... OK
+* checking loading without being on the library search path ... OK
+* checking dependencies in R code ... OK
+* checking S3 generic/method consistency ... OK
+* checking replacement functions ... OK
+* checking foreign function calls ... OK
+* checking R code for possible problems ... OK
+* checking Rd files ... OK
+* checking Rd metadata ... OK
+* checking Rd cross-references ... OK
+* checking for missing documentation entries ... OK
+* checking for code/documentation mismatches ... OK
+* checking Rd \usage sections ... OK
+* checking Rd contents ... OK
+* checking for unstated dependencies in examples ... OK
+* checking line endings in C/C++/Fortran sources/headers ... OK
+* checking compiled code ... OK
+* checking sizes of PDF files under 'inst/doc' ... OK
+* checking installed files from 'inst/doc' ... OK
+* checking files in 'vignettes' ... OK
+* checking examples ... OK
+* checking for unstated dependencies in 'tests' ... OK
+* checking tests ...
+ OK
+* checking for unstated dependencies in vignettes ... OK
+* checking package vignettes in 'inst/doc' ... OK
+* checking running R code from vignettes ...
+   'filehash.Rnw' ... OK
+ OK
+* checking re-building of vignette outputs ... OK
+* checking PDF version of manual ... OK
+* DONE
+Status: OK
+
+Here is an example from the mvtsplot package where we’ve deliberately introduced some problems to the package in order to show the check output. Checks that have passed are not shown below.
+
+* checking foreign function calls ... OK
+* checking R code for possible problems ... NOTE
+drawImage: no visible global function definition for ‘Axis’
+drawImageMargin: no visible global function definition for ‘lm’
+drawImageMargin: no visible global function definition for ‘Axis’
+splineFillIn: no visible global function definition for ‘lm’
+Undefined global functions or variables:
+  Axis lm
+Consider adding
+  importFrom("graphics", "Axis")
+  importFrom("stats", "lm")
+to your NAMESPACE file.
+
+Here, it appears that the functions Axis() and lm() are needed by the package but are not available because they are not imported from their respective packages. In this case, R CMD check provides a suggestion of how youc an modify the NAMESPACE package, but you are probably better off modifying the roxygen2 documentation in the code file instead.
+
+Moving on the rest of the checks, we see:
+
+* checking for missing documentation entries ... OK
+* checking for code/documentation mismatches ... WARNING
+Codoc mismatches from documentation object 'mvtsplot':
+mvtsplot
+  Code: function(x, group = NULL, xtime = NULL, norm = c("internal",
+                 "global"), levels = 3, smooth.df = NULL, margin =
+                 TRUE, sort = NULL, main = "", palette = "PRGn",
+                 rowstat = "median", xlim, bottom.ylim = NULL,
+                 right.xlim = NULL, gcol = 1)
+  Docs: function(y, group = NULL, xtime = NULL, norm = c("internal",
+                 "global"), levels = 3, smooth.df = NULL, margin =
+                 TRUE, sort = NULL, main = "", palette = "PRGn",
+                 rowstat = "median", xlim, bottom.ylim = NULL,
+                 right.xlim = NULL, gcol = 1)
+  Argument names in code not in docs:
+    x
+  Argument names in docs not in code:
+    y
+  Mismatches in argument names:
+    Position: 1 Code: x Docs: y
+    
+
+Here the problem is that the code has the first argument named x while the documentation has the first argument named y.
+
+* checking Rd \usage sections ... WARNING
+Undocumented arguments in documentation object 'mvtsplot'
+  ‘y’
+Documented arguments not in \usage in documentation object 'mvtsplot':
+  ‘x’
+
+Functions with \usage entries need to have the appropriate \alias
+entries, and all their arguments documented.
+The \usage entries must correspond to syntactically valid R code.
+See chapter 'Writing R documentation files' in the 'Writing R
+Extensions' manual.
+
+Because of the mismatch in code and documentation for the first argument, we have an argument that is not properly documented (y) and an argument that is documented but not used (x).
+
+In case the checks fly by too quickly, you will receive a summary message the end saying what errors and warnings you got.
+
+* DONE
+Status: 2 WARNINGs, 1 NOTE
+
